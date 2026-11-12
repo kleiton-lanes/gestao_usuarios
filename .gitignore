@@ -1,0 +1,10 @@
+# Banco SQLite (é criado automaticamente na primeira execução)
+*.sqlite
+*.sqlite3
+*.db
+
+# Sistema e editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
