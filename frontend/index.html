@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão de Usuários</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  
+  <div id="app" class="container">
+    <h1>Gestão de Usuários</h1>
+
+    <!-- feedback visual (carregando / sucesso / erro) -->
+    <div v-if="loading" class="alert loading">⏳ Carregando...</div>
+    <div v-if="message" :class="['alert', message.type]">{{ message.text }}</div>
+
+    <!--formulário de cadastro e edição  -->
+    <section class="card">
+      <h2>{{ isEditing ? 'Editar usuário #' + form.id : 'Novo usuário' }}</h2>
+
+      <form @submit.prevent="save">
+        <label>Nome
+          <input v-model="form.name" type="text" placeholder="Mínimo 3 caracteres">
+        </label>
+
+        <label>E-mail
+          <input v-model="form.email" type="email" placeholder="usuario@dominio.com">
+        </label>
+
+        <label>Login
+          <input v-model="form.login" type="text" placeholder="Mínimo 3 caracteres">
+        </label>
+
+        <label>Senha
+          <input v-model="form.password" type="password"
+                :placeholder="isEditing ? 'Deixe em branco para manter a atual' : 'Mínimo 8 caracteres'">
+        </label>
+
+        <label class="checkbox">
+          <input v-model="form.active" type="checkbox"> Usuário ativo
+        </label>
+
+        <div class="actions">
+          <button type="submit" class="btn primary" :disabled="loading">
+            {{ isEditing ? 'Salvar alterações' : 'Cadastrar' }}
+          </button>
+          <button v-if="isEditing" type="button" class="btn" @click="resetForm">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- listagem com opções de editar e excluir -->
+    <section class="card">
+      <h2>Usuários cadastrados ({{ users.length }})</h2>
+
+      <p v-if="!users.length && !loading" class="empty">Nenhum usuário cadastrado ainda.</p>
+
+      <table v-else>
+        <thead>
+          <tr>
+            <th>ID</th><th>Nome</th><th>E-mail</th><th>Login</th><th>Status</th><th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="user in users" :key="user.id">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.login }}</td>
+            <td>
+              <span :class="['badge', user.active ? 'on' : 'off']">
+                {{ user.active ? 'Ativo' : 'Inativo' }}
+              </span>
+            </td>
+            <td class="row-actions">
+              <button class="btn small" @click="startEdit(user)">Editar</button>
+              <button class="btn small danger" @click="remove(user)">Excluir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- Vue 3 via CDN: não precisa de Node nem de build -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
